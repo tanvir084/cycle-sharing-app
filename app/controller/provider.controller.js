@@ -72,9 +72,10 @@ const getNearCycleInfoController = async (req, res) => {
     const result = [];
 
     for(let i = 0; i < providerInfo?.length; i++){
-      const difDistance = latlongDistanceCalculator(userPlaceLat, userPlaceLong, providerInfo[i]?.parkingPlaceLat, providerInfo[i?.parkingPlaceLong]);
-      if(difDistance <= (distance ?? 1)){
-        result.push(difDistance);
+      const difDistance = latlongDistanceCalculator(Number(userPlaceLat), Number(userPlaceLong), Number(providerInfo[i]?.parkingPlaceLat), Number(providerInfo[i]?.parkingPlaceLong));
+  
+      if(difDistance <= (distance ?? 100)){
+        result.push(providerInfo[i]);
       }
     }
 

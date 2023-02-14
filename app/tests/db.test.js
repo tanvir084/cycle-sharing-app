@@ -38,7 +38,7 @@ test('adds 1 + 2 to equal 3', () => {
 });
 
 test('lat-long calculator ', () => {
-  expect(latlongDistanceCalculator(1,2,3,4)).toBe(3);
+  expect(latlongDistanceCalculator(1,2,3,4)).toBe('314');
 })
 
 test('distance to price calculator 5 * 10 to equal 50', () => {

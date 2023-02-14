@@ -49,6 +49,7 @@ const signInController = async (req, res) => {
     return res.status(200).send({
       success: true,
       message: 'Logged In Successfully!',
+      data: user,
     });
   } catch (err) {
     console.log(err);

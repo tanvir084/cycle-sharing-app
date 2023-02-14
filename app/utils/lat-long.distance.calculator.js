@@ -14,7 +14,7 @@ const latlongDistanceCalculator = (lat1, lon1, lat2, lon2) => {
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const d = R * c; // Distance in km
-  return d;
+  return d.toFixed(0);
 }
 
 module.exports = {
