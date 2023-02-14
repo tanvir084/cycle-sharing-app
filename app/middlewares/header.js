@@ -1,0 +1,12 @@
+addHeader = (req, res, next) => {
+  console.log(res);
+  res.header(
+    'Access-Control-Allow-Headers',
+    'x-access-token, Origin, Content-Type, Accept',
+    'auth-access-token',
+    'auth-refresh-token'
+  );
+  next();
+};
+
+module.exports = addHeader;

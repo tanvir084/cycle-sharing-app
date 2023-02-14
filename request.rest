@@ -1,0 +1,215 @@
+GET http://localhost:8080/
+
+###
+
+POST http://localhost:8080/api/auth/signup/student
+Content-Type: application/json
+
+{
+    "fullName": "Farzana Bashar",
+    "userName": "zerin12",
+    "email": "zerin12@gmail.com",
+    "password": "password",
+    "phoneNumber": "+8801777777777"
+}
+###
+
+POST http://localhost:8080/api/auth/signup/student
+Content-Type: application/json
+
+{
+    "fullName": "Farzana ",
+    "userName": "eqz",
+    "email": "zia",
+    "password": "pa",
+    "phoneNumber": "+8801777777777"
+}
+
+###
+
+POST http://localhost:8080/api/auth/signup/student
+Content-Type: application/json
+
+{
+    "username": "ffffff",
+    "email": "f@gmail.com",
+    "password": "ffffff"
+}
+
+###
+POST http://localhost:8080/api/auth/signup/instructor
+Content-Type: application/json
+
+{
+    "fullName": "Fffff Bbbbbb",
+    "userName": "sssss4",
+    "email": "s4@gmail.com",
+    "password": "ssssss",
+    "phoneNumber": "+8801777777777"
+}
+
+###
+
+POST http://localhost:8080/api/auth/signup/instructor
+Content-Type: application/json
+
+{
+    "username": "cccccc",
+    "email": "c@gmail.com",
+    "password": "cccccc"
+}
+###
+
+POST http://localhost:8080/api/auth/signin/instructor
+Content-Type: application/json
+
+{
+    "email": "c@gmail.com",
+    "password": "cccccc"
+}
+
+###
+POST http://localhost:8080/api/auth/signin/instructor
+Content-Type: application/json
+
+{
+    "email": "s@gmail.com",
+    "password": "ssssss"
+}
+###
+
+POST http://localhost:8080/api/auth/signin/student
+Content-Type: application/json
+
+{
+    "email": "f@gmail.com",
+    "password": "ffffff"
+}
+
+###
+POST http://localhost:8080/api/auth/signin/student
+Content-Type: application/json
+
+{
+    "email":"farzana@gmail.com",
+    "password": "farzana"
+}
+
+###
+
+POST http://localhost:8080/api/posts
+
+###
+
+POST http://localhost:8080/api/auth/refreshtoken/student
+Content-Type: application/json
+auth-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM3MDA3MGNlZWI3MzFkOWMyYWZmZDMiLCJpYXQiOjE2MjM3NzkzODYsImV4cCI6MTYyMzc3OTQ0Nn0.bFk6Rs-VlxAdckVis4bVUKNJ6T9WEVNMkcSVfsXEdlA
+auth-refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM4ZTgzYTFhY2IxYzMxNjE3ZDk0OWIiLCJpYXQiOjE2MjM3NzkzODYsImV4cCI6MTYyMzc3OTQ0Nn0.cLEEKK8BAr235f7vI9uZSQQUBBpnnwgCu6Slh5hH1rc
+
+{
+    "email": "f@gmail.com",
+    "password": "ffffff"
+}
+
+###
+
+POST http://localhost:8080/api/auth/refreshtoken/instructor
+Content-Type: application/json
+auth-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM3MDE5YmNlZWI3MzFkOWMyYWZmZDUiLCJpYXQiOjE2MjM3ODA2NzEsImV4cCI6MTYyMzc4MDczMX0.Tno8h2NxruWdIxzypPVAoI_IRXDx2wU1WxSe5-20UjY
+auth-refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM4ZWQzZjc3ZjdlNDMyN2RlMmRiZGMiLCJpYXQiOjE2MjM3ODA2NzEsImV4cCI6MTYyMzc4MDczMX0.Q4YHVS52MEs73fiOyW0xuEezt3c2YlR6QMH_cHwpOV0
+
+{
+    "email": "s@gmail.com",
+    "password": "ssssss"
+}
+
+###
+
+POST http://localhost:8080/api/course/post
+Content-Type: application/json
+auth-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM3MDE5YmNlZWI3MzFkOWMyYWZmZDUiLCJpYXQiOjE2MjM3ODA2NzEsImV4cCI6MTYyMzc4MDczMX0.Tno8h2NxruWdIxzypPVAoI_IRXDx2wU1WxSe5-20UjY
+auth-refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM4ZWQzZjc3ZjdlNDMyN2RlMmRiZGMiLCJpYXQiOjE2MjM3ODA2NzEsImV4cCI6MTYyMzc4MDczMX0.Q4YHVS52MEs73fiOyW0xuEezt3c2YlR6QMH_cHwpOV0
+
+{
+    "title": "C++ for beginners",
+    "catagory": "Programming",
+    "subject": "Language",
+    "url": "www.youtube.com/watch?v=Kk6Er0c7srU"
+}
+###
+
+POST http://localhost:8080/api/auth/logout/student
+auth-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM3MDE5YmNlZWI3MzFkOWMyYWZmZDUiLCJpYXQiOjE2MjM3ODA2NzEsImV4cCI6MTYyMzc4MDczMX0.Tno8h2NxruWdIxzypPVAoI_IRXDx2wU1WxSe5-20UjY
+auth-refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM4ZWQzZjc3ZjdlNDMyN2RlMmRiZGMiLCJpYXQiOjE2MjM3ODA2NzEsImV4cCI6MTYyMzc4MDczMX0.Q4YHVS52MEs73fiOyW0xuEezt3c2YlR6QMH_cHwpOV0
+
+{
+    "email":"farzana@gmail.com",
+    "password": "farzana"
+}
+
+###
+POST http://localhost:8080/api/auth/logout/instructor
+auth-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGM3MDE5YmNlZWI3MzFkOWMyYWZmZDUiLCJpYXQiOjE2MjU1OTg3NjgsImV4cCI6MTYyNTYwMjM2OH0.kpqsFS9s6kydH6IQbiYceOL9GKz2oTaDFRKfHkvEOuI
+auth-refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGU0YWIzMDI2ODRlYWRmZWI5Y2E1MzEiLCJpYXQiOjE2MjU1OTg3NjgsImV4cCI6MTYyNTY4NTE2OH0.uZ6QAoHNyeq
+
+{
+    "email": "s@gmail.com",
+    "password": "ssssss"
+}
+
+###
+
+GET http://localhost:8080/api/topcourses
+
+[
+    {
+        "chapter": [],
+        "_id": "60e4bf022e08e10463a3316b",
+        "title": "Python for beginners",
+        "instructor": "60c7019bceeb731d9c2affd5",
+        "catagory": "Programming",
+        "subject": "Programming Language",
+        "enrolement_count": 22,
+        "__v": 0
+    },
+    {
+        "chapter": [],
+        "_id": "60e4becc2e08e10463a33169",
+        "title": "Python for beginners",
+        "instructor": "60c7019bceeb731d9c2affd5",
+        "catagory": "Programming",
+        "subject": "Programming Language",
+        "enrolement_count": 16,
+        "__v": 0
+    }
+]
+
+###
+
+GET http://localhost:8080/api/book/get/60e89918f4aa35ffa7b33f19
+
+###
+POST http://localhost:8080/api/book/post
+
+{
+    "book_name" : "introduction to C",
+    "book_details" : "book on C proggraming language",
+    "writter_name": "Mr. B",
+    "book_url": "www.jdkjsnnnclhfduhknnnfn"
+}
+
+####
+
+DELETE http://localhost:8080/api/book/delete/60e87627829aa1fd57528906
+
+####
+PUT http://localhost:8080/api/book/update/60e89918f4aa35ffa7b33f19
+
+###
+POST http://localhost:8080/api/auth/signin/admin
+Content-Type: application/json
+
+{
+    "email" : "shajal@gmail.com",
+    "password" : "shajal"
+}
