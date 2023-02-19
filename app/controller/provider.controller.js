@@ -1,3 +1,4 @@
+const { transaction } = require('../models');
 const db = require('../models');
 const { latlongDistanceCalculator } = require('../utils/lat-long.distance.calculator');
 
@@ -132,7 +133,7 @@ const getAllTransactionController = async (req, res) => {
 
 
 const cycleSharingRequestController = async (req, res) => {
-  const providerInfoId = req?.params?.providerId;
+  const providerInfoId = req?.params?.providerInfoId;
   try {
     const providerInfo = await Provider.findById(providerInfoId);
     if (!providerInfo)
@@ -170,7 +171,7 @@ const cycleSharingAcceptRejectController = async (req, res) => {
         .status(400)
         .send({ success: false, message: 'Transaction info not found.' });
 
-    const transaction = await Provider.findByIdAndUpdate(
+    const transaction = await Transaction.findByIdAndUpdate(
       transactionId, 
       {
         state: req?.body?.state,
@@ -199,7 +200,7 @@ const cycleSharingStartController = async (req, res) => {
         .status(400)
         .send({ success: false, message: 'Transaction info not found.' });
 
-    const transaction = await Provider.findByIdAndUpdate(
+    const transaction = await Transaction.findByIdAndUpdate(
       transactionId, 
       {
         startTime: new Date(),
@@ -209,7 +210,7 @@ const cycleSharingStartController = async (req, res) => {
     );
 
     await Provider.findByIdAndUpdate(
-      providerInfoId,
+      transactionInfo?.providerInfo,
       {
         availability: false,
       },
@@ -231,7 +232,7 @@ const cycleSharingStartController = async (req, res) => {
 const cycleSharingStopController = async (req, res) => {
   const transactionId = req?.params?.transactionId;
   try {
-    const transactionInfo = await Transaction.findById(transactionId).populate('provider', 'perHourPrice');
+    const transactionInfo = await Transaction.findById(transactionId).populate('providerInfo', 'perHourPrice');
     if (!transactionInfo)
       return res
         .status(400)
@@ -239,22 +240,26 @@ const cycleSharingStopController = async (req, res) => {
 
     const endTime = new Date();
 
-    var diff =(transactionInfo?.startTime.getTime() - endTime.getTime()) / 1000;
+    var diff =(endTime.getTime() - transactionInfo?.startTime.getTime()) / 1000;
     diff /= (60 * 60);
-    diff = Math.abs(Math.round(diff));
+    console.log(diff);
+    diff = Math.abs(Number(diff.toFixed(2)));
+
+    diff = diff > 0 ? diff : 1;
 
     const transaction = await Transaction.findByIdAndUpdate(
       transactionId,
       {
         endTime,
         duration: diff,
-        state: 'COMPLETED'
+        state: 'COMPLETED',
+        amount: Number((diff * transactionInfo?.providerInfo?.perHourPrice).toFixed(2)),
       },
       { useFindAndModify : false, returnDocument: 'after' },
     );
 
     await Provider.findByIdAndUpdate(
-      providerInfoId,
+      transactionInfo?.providerInfo?._id,
       {
         availability: true,
       },

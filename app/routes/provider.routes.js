@@ -26,8 +26,8 @@ providerRouter.get('/api/provider/get-all', getAllProviderController);
 providerRouter.get('/api/transaction/get-all', getAllTransactionController);
 providerRouter.get('/api/sharing/start/:providerInfoId', cycleSharingRequestController);
 providerRouter.put('/api/transaction/state-change/:transactionId', cycleSharingAcceptRejectController);
-providerRouter.put('/api/transaction/start/:trasactionId', cycleSharingStartController);
-providerRouter.put('/api/transaction/stop/:trasactionId', cycleSharingStopController);
+providerRouter.put('/api/transaction/start/:transactionId', cycleSharingStartController);
+providerRouter.put('/api/transaction/stop/:transactionId', cycleSharingStopController);
 
 
 module.exports = {
