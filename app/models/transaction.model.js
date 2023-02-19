@@ -8,6 +8,10 @@ const transactionSchema= new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Provider',
   },
+  userInfo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   amount: Number,
   duration: Number,
   paid: {

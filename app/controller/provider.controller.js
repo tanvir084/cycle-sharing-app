@@ -76,7 +76,7 @@ const getNearCycleInfoController = async (req, res) => {
       const difDistance = latlongDistanceCalculator(Number(userPlaceLat), Number(userPlaceLong), Number(providerInfo[i]?.parkingPlaceLat), Number(providerInfo[i]?.parkingPlaceLong));
   
       if(difDistance <= (distance ?? 100)){
-        result.push(providerInfo[i]);
+        result.push({...providerInfo[i], distance: difDistance});
       }
     }
 
@@ -108,8 +108,8 @@ const getAllProviderController = async (req, res) => {
   }
 }
 
-const getAllTransactionController = async (req, res) => {
-  const providerInfoId = req?.params?.providerId;
+const getAllTransactionByProviderController = async (req, res) => {
+  const providerInfoId = req?.params?.providerInfoId;
   try {
     const providerInfo = await Provider.findById(providerInfoId);
     if (!providerInfo)
@@ -117,7 +117,23 @@ const getAllTransactionController = async (req, res) => {
         .status(400)
         .send({ success: false, message: 'Provider cycle info not found.' });
 
-    const transactions = await Transaction.find({providerInfoId});
+    const transactions = await Transaction.find({providerInfo: providerInfoId}).populate('userInfo', 'name email');
+
+    if (transactions?.length <=0 )
+      return res
+        .status(400)
+        .send({ success: false, message: 'Can not find transaction.' });
+
+      return res.status(201).send({ success: true, message: 'Transactions found successfully', data: transactions });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
+const getAllTransactionController = async (req, res) => {
+  try {
+    const transactions = await Transaction.find().populate('userInfo', 'name', 'email');
 
     if (transactions?.length <=0 )
       return res
@@ -144,7 +160,8 @@ const cycleSharingRequestController = async (req, res) => {
     //CREATE A NEW TRANSACTION
     let transaction = new Transaction({
       state: 'REQUEST',
-      providerInfo: providerInfoId
+      providerInfo: providerInfoId,
+      userInfo: req?.body?.userId,
     });
 
     // SAVE NEW PROVIDER DATA INTO DB
@@ -284,6 +301,7 @@ module.exports = {
   getNearCycleInfoController,
   getAllProviderController,
   getAllTransactionController,
+  getAllTransactionByProviderController,
   cycleSharingRequestController,
   cycleSharingAcceptRejectController,
   cycleSharingStartController,
