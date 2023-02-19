@@ -2,7 +2,12 @@ const {
   postProviderInfoController,
   updateProviderParkingInfoController,
   getNearCycleInfoController,
-  cycleSharingStartController
+  getAllProviderController,
+  getAllTransactionController,
+  cycleSharingRequestController,
+  cycleSharingAcceptRejectController,
+  cycleSharingStartController,
+  cycleSharingStopController
 } = require('../controller');
 const express = require('express');
 
@@ -15,7 +20,14 @@ providerRouter.post(
 
 providerRouter.put('/api/provider/cycle-info/:providerInfoId', updateProviderParkingInfoController);
 providerRouter.put('/api/nearBy/cycle-info', getNearCycleInfoController);
-providerRouter.get('/api/sharing/start/:providerInfoId', cycleSharingStartController);
+providerRouter.get('/api/provider/get-all', getAllProviderController);
+
+//Transaction route
+providerRouter.get('/api/transaction/get-all', getAllTransactionController);
+providerRouter.get('/api/sharing/start/:providerInfoId', cycleSharingRequestController);
+providerRouter.put('/api/transaction/state-change/:transactionId', cycleSharingAcceptRejectController);
+providerRouter.put('/api/transaction/start/:trasactionId', cycleSharingStartController);
+providerRouter.put('/api/transaction/stop/:trasactionId', cycleSharingStopController);
 
 
 module.exports = {

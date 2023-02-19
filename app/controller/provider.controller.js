@@ -24,7 +24,7 @@ const postProviderInfoController = async (req, res) => {
       parkingPlaceLat,
       parkingPlaceLong,
       perHourPrice,
-      availability,
+      availability: availability ?? true,
     });
 
     // SAVE NEW PROVIDER DATA INTO DB
@@ -91,7 +91,47 @@ const getNearCycleInfoController = async (req, res) => {
   }
 }
 
-const cycleSharingStartController = async (req, res) => {
+const getAllProviderController = async (req, res) => {
+  try {
+    const providers = await Provider.find({});
+
+    if (providers?.length <=0 )
+      return res
+        .status(400)
+        .send({ success: false, message: 'Can not find provider.' });
+
+      return res.status(201).send({ success: true, message: 'Providers found successfully', data: providers });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
+const getAllTransactionController = async (req, res) => {
+  const providerInfoId = req?.params?.providerId;
+  try {
+    const providerInfo = await Provider.findById(providerInfoId);
+    if (!providerInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Provider cycle info not found.' });
+
+    const transactions = await Transaction.find({providerInfoId});
+
+    if (transactions?.length <=0 )
+      return res
+        .status(400)
+        .send({ success: false, message: 'Can not find transaction.' });
+
+      return res.status(201).send({ success: true, message: 'Transactions found successfully', data: transactions });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
+
+const cycleSharingRequestController = async (req, res) => {
   const providerInfoId = req?.params?.providerId;
   try {
     const providerInfo = await Provider.findById(providerInfoId);
@@ -102,7 +142,7 @@ const cycleSharingStartController = async (req, res) => {
 
     //CREATE A NEW TRANSACTION
     let transaction = new Transaction({
-      startTime: new Date(),
+      state: 'REQUEST',
       providerInfo: providerInfoId
     });
 
@@ -121,9 +161,126 @@ const cycleSharingStartController = async (req, res) => {
   }
 }
 
+const cycleSharingAcceptRejectController = async (req, res) => {
+  const transactionId = req?.params?.transactionId;
+  try {
+    const transactionInfo = await Transaction.findById(transactionId);
+    if (!transactionInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Transaction info not found.' });
+
+    const transaction = await Provider.findByIdAndUpdate(
+      transactionId, 
+      {
+        state: req?.body?.state,
+      },
+      { useFindAndModify : false, returnDocument: 'after' },
+  );
+
+    if (!transaction)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Can not change the state of transaction.' });
+
+      return res.status(201).send({ success: true, message: 'Transaction state changed successfully', data: transaction });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
+const cycleSharingStartController = async (req, res) => {
+  const transactionId = req?.params?.transactionId;
+  try {
+    const transactionInfo = await Transaction.findById(transactionId);
+    if (!transactionInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Transaction info not found.' });
+
+    const transaction = await Provider.findByIdAndUpdate(
+      transactionId, 
+      {
+        startTime: new Date(),
+        state: 'ACTIVE'
+      },
+      { useFindAndModify : false, returnDocument: 'after' },
+    );
+
+    await Provider.findByIdAndUpdate(
+      providerInfoId,
+      {
+        availability: false,
+      },
+      { useFindAndModify : false, returnDocument: 'after' },
+    )
+
+    if (!transaction)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Can not start transaction.' });
+
+      return res.status(201).send({ success: true, message: 'Transaction started successfully', data: transaction });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
+const cycleSharingStopController = async (req, res) => {
+  const transactionId = req?.params?.transactionId;
+  try {
+    const transactionInfo = await Transaction.findById(transactionId).populate('provider', 'perHourPrice');
+    if (!transactionInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Transaction info not found.' });
+
+    const endTime = new Date();
+
+    var diff =(transactionInfo?.startTime.getTime() - endTime.getTime()) / 1000;
+    diff /= (60 * 60);
+    diff = Math.abs(Math.round(diff));
+
+    const transaction = await Transaction.findByIdAndUpdate(
+      transactionId,
+      {
+        endTime,
+        duration: diff,
+        state: 'COMPLETED'
+      },
+      { useFindAndModify : false, returnDocument: 'after' },
+    );
+
+    await Provider.findByIdAndUpdate(
+      providerInfoId,
+      {
+        availability: true,
+      },
+      { useFindAndModify : false, returnDocument: 'after' },
+    )
+
+    if (!transaction)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Can not stop transaction.' });
+
+      return res.status(201).send({ success: true, message: 'Transaction completed successfully', data: transaction });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
 module.exports = {
   postProviderInfoController,
   updateProviderParkingInfoController,
   getNearCycleInfoController,
-  cycleSharingStartController
+  getAllProviderController,
+  getAllTransactionController,
+  cycleSharingRequestController,
+  cycleSharingAcceptRejectController,
+  cycleSharingStartController,
+  cycleSharingStopController
 };

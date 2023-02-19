@@ -22,8 +22,9 @@ app.use(express.json());
 
 //
 const dbConnect = async (db) => {
-  const url = `mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`;
-  console.log(url);
+  //const url = `mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`;
+  //console.log(url);
+  const url = `mongodb+srv://Tanvir084:7K9w5n7SvvSOPSZ6@cluster0.fonprpr.mongodb.net/test`;
   try {
     await db.mongoose.connect(url, {
       useNewUrlParser: true,
