@@ -2,6 +2,8 @@ const {
   signUpController,
   signInController,
   getController,
+  userProfile,
+  providerProfile,
 } = require('../controller');
 const express = require('express');
 
@@ -19,6 +21,10 @@ authRouter.post(
 
 authRouter.post('/api/auth/signin', signInController);
 authRouter.get('/api/get/users', getController);
+
+//For profile info
+authRouter.get('/api/get/user-profile/:userId', userProfile);
+authRouter.get('/api/get/provider-profile/:providerInfoId', providerProfile);
 
 
 module.exports = {

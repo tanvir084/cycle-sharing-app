@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 
 
 const User = db.user;
+const Provider = db.provider;
 
 const signUpController = async (req, res) => {
   const { email, name, role } = req?.body;
@@ -76,8 +77,45 @@ const getController = async (req, res) => {
   }
 }
 
+const userProfile = async (req, res) => {
+  const userId = req?.params?.userId;
+  try {
+    const userInfo = await User.findById(userId);
+    if (!userInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'User info not found.' });
+
+
+    return res.status(201).send({ success: true, message: 'User info found sucessfully', data: userInfo });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
+const providerProfile = async (req, res) => {
+  const providerId = req?.params?.providerInfoId;
+  try {
+    const providerInfo = await Provider.findById(providerId)
+      .populate('user', 'name email');
+    if (!providerInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Provider info not found.' });
+
+
+    return res.status(201).send({ success: true, message: 'Provider info found sucessfully', data: providerInfo });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
 module.exports = {
   signUpController,
   signInController,
-  getController
+  getController,
+  userProfile,
+  providerProfile
 };

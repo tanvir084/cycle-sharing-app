@@ -117,8 +117,35 @@ const getAllTransactionByProviderController = async (req, res) => {
         .status(400)
         .send({ success: false, message: 'Provider cycle info not found.' });
 
-    const transactions = await Transaction.find({providerInfo: providerInfoId}).populate('userInfo', 'name email');
+    const transactions = await Transaction.find({providerInfo: providerInfoId})
+      .populate('userInfo', 'name email')
+      .populate('providerInfo', 'cycleModel cycleNumber parkingPlaceLat parkingPlaceLong perHourPrice availability');
 
+    if (transactions?.length <=0 )
+      return res
+        .status(400)
+        .send({ success: false, message: 'Can not find transaction.' });
+
+      return res.status(201).send({ success: true, message: 'Transactions found successfully', data: transactions });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
+const getAllTransactionByUserController = async (req, res) => {
+  const userId = req?.params?.userId;
+  try {
+    const userInfo = await User.findById(userId);
+    if (!userInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'User not found.' });
+
+    const transactions = await Transaction.find({userInfo: userId})
+      .populate('providerInfo', 'cycleModel cycleNumber parkingPlaceLat parkingPlaceLong perHourPrice availability')
+      .populate('userInfo', 'name email');     
+    
     if (transactions?.length <=0 )
       return res
         .status(400)
@@ -133,7 +160,9 @@ const getAllTransactionByProviderController = async (req, res) => {
 
 const getAllTransactionController = async (req, res) => {
   try {
-    const transactions = await Transaction.find().populate('userInfo', 'name', 'email');
+    const transactions = await Transaction.find().populate('userInfo', 'name', 'email')
+      .populate('userInfo', 'name email')
+      .populate('providerInfo', 'cycleModel cycleNumber parkingPlaceLat parkingPlaceLong perHourPrice availability');
 
     if (transactions?.length <=0 )
       return res
@@ -270,7 +299,7 @@ const cycleSharingStopController = async (req, res) => {
         endTime,
         duration: diff,
         state: 'COMPLETED',
-        amount: Number((diff * transactionInfo?.providerInfo?.perHourPrice).toFixed(2)),
+        amount: Number((diff * transactionInfo?.providerInfo?.perHourPrice ?? 10).toFixed(2)),
       },
       { useFindAndModify : false, returnDocument: 'after' },
     );
@@ -295,6 +324,35 @@ const cycleSharingStopController = async (req, res) => {
   }
 }
 
+const cycleSharingPaymentController = async (req, res) => {
+  const transactionId = req?.params?.transactionId;
+  try {
+    const transactionInfo = await Transaction.findById(transactionId);
+    if (!transactionInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Transaction info not found.' });
+
+    const transaction = await Transaction.findByIdAndUpdate(
+      transactionId, 
+      {
+        paid: true,
+      },
+      { useFindAndModify : false, returnDocument: 'after' },
+  );
+
+    if (!transaction)
+      return res
+        .status(400)
+        .send({ success: false, message: 'Can not change the state of transaction.' });
+
+      return res.status(201).send({ success: true, message: 'Transaction is paid by user sucessfully', data: transaction });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
 module.exports = {
   postProviderInfoController,
   updateProviderParkingInfoController,
@@ -302,8 +360,10 @@ module.exports = {
   getAllProviderController,
   getAllTransactionController,
   getAllTransactionByProviderController,
+  getAllTransactionByUserController,
   cycleSharingRequestController,
   cycleSharingAcceptRejectController,
   cycleSharingStartController,
-  cycleSharingStopController
+  cycleSharingStopController,
+  cycleSharingPaymentController
 };
