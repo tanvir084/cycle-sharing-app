@@ -353,6 +353,39 @@ const cycleSharingPaymentController = async (req, res) => {
   }
 }
 
+const getAllTransactionByUserProviderController = async (req, res) => {
+  const userId = req?.params?.userId;
+  try {
+    const userInfo = await User.findById(userId);
+    if (!userInfo)
+      return res
+        .status(400)
+        .send({ success: false, message: 'User not found.' });
+
+    const provider = await Provider.findOne({
+      user: userId
+    });
+
+    const transactions = await Transaction.find({userInfo: userId})
+      .populate('providerInfo', 'cycleModel cycleNumber parkingPlaceLat parkingPlaceLong perHourPrice availability')
+      .populate('userInfo', 'name email'); 
+      
+    const transactionProvider = await Transaction.find({providerInfo: provider?._id})
+      .populate('providerInfo', 'cycleModel cycleNumber parkingPlaceLat parkingPlaceLong perHourPrice availability')
+      .populate('userInfo', 'name email');
+    
+    // if (transactions?.length <=0 )
+    //   return res
+    //     .status(400)
+    //     .send({ success: false, message: 'Can not find transaction.' });
+
+      return res.status(201).send({ success: true, message: 'Transactions found successfully', data: {userTransactions: transactions, providerTransactions: transactionProvider }});
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err });
+  }
+}
+
 module.exports = {
   postProviderInfoController,
   updateProviderParkingInfoController,
@@ -365,5 +398,6 @@ module.exports = {
   cycleSharingAcceptRejectController,
   cycleSharingStartController,
   cycleSharingStopController,
-  cycleSharingPaymentController
+  cycleSharingPaymentController,
+  getAllTransactionByUserProviderController
 };

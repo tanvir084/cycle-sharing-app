@@ -47,12 +47,13 @@ const signInController = async (req, res) => {
         message: 'Email or Password is wrong',
     });
 
-    const provider = await Provider.findOne({userInfo:user?._id});
+    const provider = await Provider.findOne({user:user?._id});
     
     return res.status(200).send({
       success: true,
       message: 'Logged In Successfully!',
-      data: {...user, provider},
+      data: user,
+      provider,
     });
   } catch (err) {
     console.log(err);

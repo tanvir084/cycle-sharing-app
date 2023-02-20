@@ -10,7 +10,8 @@ const {
   cycleSharingAcceptRejectController,
   cycleSharingStartController,
   cycleSharingStopController,
-  cycleSharingPaymentController
+  cycleSharingPaymentController,
+  getAllTransactionByUserProviderController
 } = require('../controller');
 const express = require('express');
 
@@ -28,6 +29,9 @@ providerRouter.get('/api/provider/transaction/get-all/:providerInfoId', getAllTr
 
 //For getting all transactions of a user
 providerRouter.get('/api/user/transaction/get-all/:userId', getAllTransactionByUserController);
+
+//For getting all transactions of a user and as a provider
+providerRouter.get('/api/user/transaction/user-provider/get-all/:userId', getAllTransactionByUserProviderController);
 
 //Transaction route
 providerRouter.get('/api/transaction/get-all', getAllTransactionController);
